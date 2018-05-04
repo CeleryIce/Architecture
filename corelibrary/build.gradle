@@ -1,13 +1,30 @@
 apply plugin: 'com.android.library'
+apply plugin:'me.tatarka.retrolambda'
+apply plugin: 'com.novoda.bintray-release'
+
+publish {
+    userOrg = 'celery1025'      //bintray注册的用户名
+    groupId = 'com.celeryice'         //compile引用时的第1部分groupId
+    artifactId = 'corelibrary'     //compile引用时的第2部分项目名
+    publishVersion = '1.0.0'    //compile引用时的第3部分版本号
+    desc = 'corelibrary'
+}
 
 android {
     compileSdkVersion 26
+    buildToolsVersion "26.0.2"
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //Arouter引入部分
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ moduleName : project.getName() ]
+            }
+        }
     }
     buildTypes {
         release {
@@ -15,13 +32,56 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    buildToolsVersion '27.0.3'
+
+    lintOptions {
+        abortOnError false
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile ('com.android.support:recyclerview-v7:26.0.2') {
+        exclude group: 'com.android.support'
+    }
+    //glide
+    compile 'com.github.bumptech.glide:okhttp3-integration:4.7.1'
+    //请求客户端持久化配合retrofit
+    compile 'com.github.franmontiel:PersistentCookieJar:v1.0.0'
+    //retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+    compile 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    //rxjava
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'io.reactivex.rxjava2:rxjava:2.1.5'
+    //dragger2
+    compile 'com.google.dagger:dagger:2.5'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
+    //ARouter（不能引入apt否则会无效）
+    compile 'com.alibaba:arouter-api:1.2.1'
+    annotationProcessor 'com.alibaba:arouter-compiler:1.1.2'
+    //圆形图片处理
+    compile ('com.makeramen:roundedimageview:2.3.0') {
+        exclude group: 'com.makeramen'
+    }
+    //开发版本
+    compile ('com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-5') {
+        exclude group: 'com.scwang.smartrefresh'
+    }
+    //弹出框
+    compile 'com.necer.ndialog2:ndialog:1.0.1'
+    //6.0动态权限控制
+    compile ('com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar') {
+        exclude group: 'com.tbruyelle.rxpermissions2'
+    }
+    //日志打印
+    compile 'com.orhanobut:logger:2.1.1'
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="loading_dialog" parent="android:style/Theme.Dialog">
+        <!--背景颜色及透明程度-->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--是否有标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsFloating">true</item>
+        <!--是否模糊-->
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <!--celeryalertdialog动画-->
+    <style name="celeryalertdialog_style" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/celeryalertdialog_in</item>
+        <item name="android:windowExitAnimation">@anim/celeryalertdialog_out</item>
+    </style>
+
+    <style name="bottomDialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="mystyle" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/bottom_enter_anim</item>
+        <item name="android:windowExitAnimation">@anim/bottom_exit_anim</item>
+    </style>
+
+
+</resources>
