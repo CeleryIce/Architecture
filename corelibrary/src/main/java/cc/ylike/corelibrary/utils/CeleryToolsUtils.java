@@ -1,6 +1,7 @@
 package cc.ylike.corelibrary.utils;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +19,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -266,50 +270,7 @@ public class CeleryToolsUtils {
         return "";
     }
 
-    /**
-     * 时间格式 2016-9-28 18:40:50
-     * @return
-     */
-    public static String getCurrentTime(){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return format.format(new Date());
-    }
 
-    /**
-     * 时间格式 2016-9-28 18:40:50
-     * @return
-     */
-    public static String getTime(long time){
-        Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return sf.format(d);
-    }
-
-    /**
-     * 时间格式 2016-9-28
-     * @return
-     */
-    public static String getTimeYmd(long time){
-        Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-        return sf.format(d);
-    }
-
-    /**
-     * 时间格式 时间格式转换成2016/9/28
-     * @return
-     */
-    public static String getTimeSearchFormat(String str){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            Date date = format.parse(str);
-            SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd");
-            return format1.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
 
     /**
      * 获取手机IMEI号
@@ -333,38 +294,38 @@ public class CeleryToolsUtils {
         return imsi ;
     }
 
+
     /**
-     * 时间戳转换成字符窜
-     * @param time
+     * 日期字符串转时间戳
+     * @param dateStr 如 2018-05-17 16:07 或者 2018/05/17 16:07
+     * @param tim  定义dateStr格式 如 "yyyy-MM-dd HH:mm"，"yyy/MM/dd HH:mm" 等等
      * @return
      */
-    public static String getDateToString(long time) {
-        Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-        return sf.format(d);
+    private long getStringToDateTime(String dateStr,String tim){
+        SimpleDateFormat sdf=new SimpleDateFormat(tim);
+        Date date =null;
+        try {
+            date = sdf.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date == null ? 0 : date.getTime();
     }
+
 
     /**
      * 时间戳转换成字符窜
      * @param time
+     * @param tim 格式 如 "yyyy-MM-dd"，"yyy/MM/dd" 等等
      * @return
      */
-    public static String getDateToString2(long time) {
+    public static String getDateToString(long time,String tim) {
         Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat sf = new SimpleDateFormat(tim);
         return sf.format(d);
     }
 
-    /**
-     * 时间戳转换成字符窜
-     * @param time
-     * @return
-     */
-    public static String getDateToString3(long time) {
-        Date d = new Date(time);
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        return sf.format(d);
-    }
+
 
 
     /**
@@ -576,12 +537,45 @@ public class CeleryToolsUtils {
         return diff;
     }
 
+
     /**
      * 跳转安装App
      * @param context 上下文对象
      * @param appFile 文件
+     * @param requestCode  ActivityForResult requestCode
+     * 判断是否是8.0,8.0需要处理未知应用来源权限问题,否则直接安装
      */
-    public static void installApp(Context context,File appFile){
+    public static void installApp(Activity context,File appFile,int requestCode){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            boolean b = context.getPackageManager().canRequestPackageInstalls();
+            if (b) {
+                //跳转安装app
+               ininstallApp(context,appFile);
+            } else {
+                //请求安装未知应用来源的权限
+                new RxPermissions(context).request(Manifest.permission.REQUEST_INSTALL_PACKAGES).subscribe(grant->{
+                    if (grant){
+                        //跳转安装app
+                        ininstallApp(context,appFile);
+                    }else {
+                        //没有权限跳转到
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
+                        context.startActivityForResult(intent, requestCode);
+                    }
+                });
+            }
+        } else {
+            //跳转安装app
+            ininstallApp(context,appFile);
+        }
+    }
+
+    /**
+     * 跳转安装App
+     * @param context
+     * @param appFile
+     */
+    private static void ininstallApp(Context context,File appFile){
         //创建URI
         Uri uri = Uri.fromFile(appFile);
         //创建Intent意图

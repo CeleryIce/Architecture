@@ -77,11 +77,15 @@ dependencies {
         exclude group: 'com.scwang.smartrefresh'
     }
     //弹出框
-    compile 'com.necer.ndialog2:ndialog:1.0.1'
+    compile ('com.necer.ndialog2:ndialog:1.0.1') {
+        exclude group: 'com.necer.ndialog2'
+    }
     //6.0动态权限控制
     compile ('com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar') {
         exclude group: 'com.tbruyelle.rxpermissions2'
     }
     //日志打印
-    compile 'com.orhanobut:logger:2.1.1'
+    compile ('com.orhanobut:logger:2.1.1') {
+        exclude group: 'com.orhanobut'
+    }
 }

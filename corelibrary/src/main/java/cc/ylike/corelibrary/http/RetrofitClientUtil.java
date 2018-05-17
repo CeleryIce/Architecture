@@ -2,7 +2,6 @@ package cc.ylike.corelibrary.http;
 
 import android.content.Context;
 
-
 import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
@@ -29,6 +28,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import okio.Buffer;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -39,7 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * @author xsl
  * @des 通过Rxjava 和 retrofit2 结合封装 http请求
  * 实现如下功能
- * 1、请求参数（get、post）打印
+ * 1、请求参数（get、post表单、post Json字符串）打印
  * 2、实现json数据解析
  * 3、动态添加请求头
  * 4、动态替换baseurl
@@ -176,7 +176,13 @@ public class RetrofitClientUtil {
                     for (int i = 0; i < body.size(); i++) {
                         sb.append( "\n" + body.encodedName(i) + "=" + URLDecoderForUtf8(body.encodedValue(i)));
                     }
-                    L.d("请求参数："+ sb.toString() + "");
+                    L.d("表单提交请求参数：\n"+ "{\n" +  sb.toString() + "\n}");
+                }else {
+                    //buffer流
+                    Buffer buffer = new Buffer();
+                    request.body().writeTo(buffer);
+                    String oldParamsJson = buffer.readUtf8();
+                    L.d("Json传递请求参数："+ URLDecoderForUtf8(oldParamsJson));
                 }
             }
 
