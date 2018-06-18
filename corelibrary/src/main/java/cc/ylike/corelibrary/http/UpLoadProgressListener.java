@@ -11,14 +11,14 @@ public interface UpLoadProgressListener {
      * @param percent 上传进度百分比
      * @param done 是否上传完成
      */
-    void progress(float percent, boolean done);
+    void progress(float percent, boolean done,String tag);
 
     /**
      * 上传成功后返回
      * @param bool 是否上传成功
      * @param response 上传成功后返回字符串
      */
-    void onSuccess(boolean bool, String response);
+    void onSuccess(boolean bool, String response,String tag);
 
     /**
      * 上传失败
@@ -26,5 +26,5 @@ public interface UpLoadProgressListener {
      * @param Msg 错误信息内部描述
      * @param e 异常
      */
-    void onFailure(int code, String Msg, Exception e);
+    void onFailure(int code, String Msg, Exception e,String tag);
 }

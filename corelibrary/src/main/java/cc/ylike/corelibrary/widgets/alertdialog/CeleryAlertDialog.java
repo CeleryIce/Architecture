@@ -7,7 +7,7 @@ import android.text.InputType;
 import android.view.Window;
 
 
-import com.necer.ndialog.NDialog;
+
 
 import cc.ylike.corelibrary.R;
 import cc.ylike.corelibrary.utils.CoreLibraryRetriever;

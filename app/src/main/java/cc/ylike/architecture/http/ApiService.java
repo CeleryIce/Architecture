@@ -6,6 +6,7 @@ package cc.ylike.architecture.http;
 import java.util.Map;
 
 import cc.ylike.architecture.bean.LoginBean;
+import io.reactivex.Observable;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.FieldMap;
@@ -25,7 +26,7 @@ public interface ApiService {
 
     //登录接口
     @POST("https://apps.e-lingcloud.com/app/login.ihtml")
-    Call<LoginBean> doLogin(@Body Map<String,Object> map);
+    Observable<LoginBean> doLogin(@Body Map<String,Object> map);
 
 
 

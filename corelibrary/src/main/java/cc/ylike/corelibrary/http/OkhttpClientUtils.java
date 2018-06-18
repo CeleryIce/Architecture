@@ -91,7 +91,7 @@ public class OkhttpClientUtils {
                 .post(new CeleryRequestBody(builder.build()) {
                     @Override
                     public void loading(float percent, boolean done) {
-                        upLoadProgressListener.progress(percent, done);
+                        upLoadProgressListener.progress(percent, done,file.getAbsolutePath().toString());
                     }
                 })
                 .build();
@@ -106,12 +106,12 @@ public class OkhttpClientUtils {
                     NetworkUtil.pingBaiDu(new NetworkUtil.pingListerner() {
                         @Override
                         public void onSuccess(boolean bool) {
-                            upLoadProgressListener.onFailure(SERVER_EXCEPTION_CODE, SERVER_EXCEPTION, e);
+                            upLoadProgressListener.onFailure(SERVER_EXCEPTION_CODE, SERVER_EXCEPTION, e,file.getAbsolutePath().toString());
                         }
 
                         @Override
                         public void onFailure(int code, boolean bool) {
-                            upLoadProgressListener.onFailure(NO_NETWORK_CODE, NO_NETWORK, null);
+                            upLoadProgressListener.onFailure(NO_NETWORK_CODE, NO_NETWORK, null,file.getAbsolutePath().toString());
                         }
                     }, handler);
                 }catch (Exception e1){
@@ -127,10 +127,10 @@ public class OkhttpClientUtils {
                         @Override
                         public void run() {
                             if (response.isSuccessful() && response.code() == 200) {
-                                upLoadProgressListener.onSuccess(true, body);
-                                upLoadProgressListener.progress(100, true);
+                                upLoadProgressListener.onSuccess(true, body,file.getAbsolutePath());
+                                upLoadProgressListener.progress(100, true,file.getAbsolutePath().toString());
                             } else {
-                                upLoadProgressListener.onFailure(response.code(), response.message(), null);
+                                upLoadProgressListener.onFailure(response.code(), response.message(), null,file.getAbsolutePath().toString());
                             }
                         }
                     });
@@ -165,13 +165,13 @@ public class OkhttpClientUtils {
                 return originalResponse.newBuilder().body(new CeleryResponseBody(originalResponse.body()) {
                     @Override
                     public void onResponseProgress(float percent, boolean done) {
-                        downLoadProgressListener.progress(percent, done);
+                        downLoadProgressListener.progress(percent, done,url);
                     }
                 }).build();
             }
-        }).connectTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
+        }).connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .cookieJar(cookieJar)
                 .build();
 
@@ -185,7 +185,7 @@ public class OkhttpClientUtils {
                         long total = response.body().contentLength();
                         L.e("total------>" + total);
                         InputStream is = response.body().byteStream();
-                        downLoadProgressListener.write(is);
+                        downLoadProgressListener.write(is,url);
                         if (is != null) {
                             is.close();
                         }
@@ -193,7 +193,7 @@ public class OkhttpClientUtils {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                downLoadProgressListener.progress(100, true);
+                                downLoadProgressListener.progress(100, true,url);
                             }
                         });
 
@@ -202,7 +202,7 @@ public class OkhttpClientUtils {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                downLoadProgressListener.onFailure(response.code(), response.message(), null);
+                                downLoadProgressListener.onFailure(response.code(), response.message(), null,url);
                             }
                         });
                     }

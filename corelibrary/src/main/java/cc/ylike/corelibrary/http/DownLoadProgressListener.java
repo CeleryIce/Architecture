@@ -12,13 +12,13 @@ public interface DownLoadProgressListener {
      * @param percent 下载进度百分比
      * @param done 是否下载到100%（下载完成）
      */
-    void progress(float percent, boolean done);
+    void progress(float percent, boolean done,String tag);
 
     /**
      * 数据流，这里操作数据流写入文件过程
      * @param inputStream 数据流
      */
-    void write(InputStream inputStream);
+    void write(InputStream inputStream,String tag);
 
     /**
      * 下载失败
@@ -26,5 +26,5 @@ public interface DownLoadProgressListener {
      * @param Msg 错误描述
      * @param e 异常
      */
-    void onFailure(int code, String Msg, Exception e);
+    void onFailure(int code, String Msg, Exception e,String tag);
 }

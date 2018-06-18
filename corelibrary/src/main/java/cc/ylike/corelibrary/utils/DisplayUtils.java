@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
  * @version 2.0
  * 在 corelibrary 1.1.0.5 版本中增加此全局功能
  */
-public class CeleryDisplayUtils {
+public class DisplayUtils {
     public static int width,height,density;
     public static float densityDpi;
     private static DisplayMetrics metric;

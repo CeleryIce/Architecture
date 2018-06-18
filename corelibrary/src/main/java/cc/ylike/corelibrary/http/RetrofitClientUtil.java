@@ -217,6 +217,8 @@ public class RetrofitClientUtil {
 //                    .cookieJar(cookieJar)
                     .cache(cache)
                     .connectTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(30, TimeUnit.SECONDS)
+                    .writeTimeout(30, TimeUnit.SECONDS)
                     .build();
         }
        return client;

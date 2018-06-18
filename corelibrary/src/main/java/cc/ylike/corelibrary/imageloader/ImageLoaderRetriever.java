@@ -37,8 +37,8 @@ public class ImageLoaderRetriever {
         if (requestOptions == null) {
             requestOptions = new RequestOptions()
                     .centerCrop()
-                    .placeholder(R.drawable.image_default)
-                    .error(R.drawable.image_default)
+                    .placeholder(R.drawable.core_image_default)
+                    .error(R.drawable.core_image_default)
                     .dontAnimate()
                     .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC)
                     .priority(Priority.HIGH);

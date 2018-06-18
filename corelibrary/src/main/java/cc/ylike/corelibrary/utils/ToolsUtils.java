@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
@@ -52,7 +53,7 @@ import io.reactivex.annotations.Nullable;
  * 3、跳转apk安装
  *
  */
-public class CeleryToolsUtils {
+public class ToolsUtils {
 
     /**
      * 隐藏虚拟键盘
@@ -301,7 +302,7 @@ public class CeleryToolsUtils {
      * @param tim  定义dateStr格式 如 "yyyy-MM-dd HH:mm"，"yyy/MM/dd HH:mm" 等等
      * @return
      */
-    private long getStringToDateTime(String dateStr,String tim){
+    public long getStringToDateTime(String dateStr,String tim){
         SimpleDateFormat sdf=new SimpleDateFormat(tim);
         Date date =null;
         try {

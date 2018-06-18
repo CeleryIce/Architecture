@@ -17,5 +17,4 @@ public class ImageLoader {
         return retriever.init(context);
     }
 
-
 }
