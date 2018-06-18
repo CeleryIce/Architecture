@@ -48,7 +48,7 @@ public class CoreLibrary {
     }
 
     /**
-     * 初始化请求头，建议请在登录后初始化
+     * 初始化请求头，建议在登录后初始化
      */
     public static void initHeaders(Map<String,String> headerMap){
         MapHeaders = headerMap;

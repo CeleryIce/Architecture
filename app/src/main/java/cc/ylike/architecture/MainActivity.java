@@ -22,6 +22,7 @@ import cc.ylike.corelibrary.bus.EventBase;
 import cc.ylike.corelibrary.bus.RxBus;
 import cc.ylike.corelibrary.bus.RxBusEvent;
 import cc.ylike.corelibrary.notify.DownloadService;
+import cc.ylike.corelibrary.notify.NotifyComponent;
 import cc.ylike.corelibrary.notify.ProgressInfo;
 import cc.ylike.corelibrary.utils.CoreContants;
 import cc.ylike.corelibrary.utils.L;
