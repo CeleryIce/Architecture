@@ -23,6 +23,9 @@ import cc.ylike.corelibrary.utils.CoreContants;
 import cc.ylike.corelibrary.utils.L;
 import cc.ylike.corelibrary.utils.ToolsUtils;
 
+/**
+ * 下载服务Service
+ */
 public class DownloadService extends Service {
 
     private NotificationManager manger;
@@ -86,19 +89,23 @@ public class DownloadService extends Service {
                     }
                     progressMap.remove(tag);
                 } else {
-                    if (notity) {
-                        if (progressMap.get(tag) == null || progress > progressMap.get(tag)) {
+                    if (progressMap.get(tag) == null || progress > progressMap.get(tag)) {
+                        if (notity) {
                             sendNotification(tag, progress);
                             progressMap.put(tag, progress);
                         }
+
+                        /**
+                         * 发送广播更新下载进度
+                         * 控制发送速度防止内存溢出
+                         * 待优化
+                         */
+                        ProgressInfo progressInfo = new ProgressInfo();
+                        progressInfo.setPercent(percent);
+                        progressInfo.setUrl(tag);
+                        RxBus.getInstance().post(new EventBase(CoreContants.DOWNLOAD_PROGRESS_NOTITY, tag, progressInfo));
+
                     }
-                }
-                //发送广播更新下载进度
-                if (progress<100 && !done) {
-                    ProgressInfo progressInfo = new ProgressInfo();
-                    progressInfo.setPercent(percent);
-                    progressInfo.setUrl(tag);
-                    RxBus.getInstance().post(new EventBase(CoreContants.DOWNLOAD_PROGRESS_NOTITY, tag, progressInfo));
                 }
             }
 

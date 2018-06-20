@@ -11,8 +11,8 @@ publish {
 }
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
@@ -75,5 +75,4 @@ dependencies {
     api('com.orhanobut:logger:2.2.0') {
         exclude group: 'com.orhanobut'
     }
-
 }

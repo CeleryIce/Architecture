@@ -2,12 +2,17 @@ package cc.ylike.architecture;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import java.io.File;
 
 import javax.inject.Inject;
 
@@ -22,10 +27,11 @@ import cc.ylike.corelibrary.bus.EventBase;
 import cc.ylike.corelibrary.bus.RxBus;
 import cc.ylike.corelibrary.bus.RxBusEvent;
 import cc.ylike.corelibrary.notify.DownloadService;
-import cc.ylike.corelibrary.notify.NotifyComponent;
 import cc.ylike.corelibrary.notify.ProgressInfo;
 import cc.ylike.corelibrary.utils.CoreContants;
 import cc.ylike.corelibrary.utils.L;
+import cc.ylike.corelibrary.utils.PictureFromSysUtil;
+import cc.ylike.corelibrary.widgets.alertdialog.AvatarDialog;
 
 
 public class MainActivity extends BaseActivity implements MainActivityContract.View{
@@ -39,6 +45,7 @@ public class MainActivity extends BaseActivity implements MainActivityContract.V
 
     @Inject
     MainActivityPresenter activityPresenter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +79,14 @@ public class MainActivity extends BaseActivity implements MainActivityContract.V
                         ,Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     .subscribe(granted -> {
                         if (granted) {
-                            Intent intent = new Intent(mContext, DownloadService.class);
-                            intent.putExtra(CoreContants.DOWNLOAD_URL,"https://celery-master.oss-cn-shenzhen.aliyuncs.com/201805021643.apk");
-                            intent.putExtra(CoreContants.DOWNLOAD_SAVE_FOlDER,"corelibrary");
-                            intent.putExtra(CoreContants.DOWNLOAD_NOTITY,false);
-                            startService(intent);
+//                            Intent intent = new Intent(mContext, DownloadService.class);
+//                            intent.putExtra(CoreContants.DOWNLOAD_URL,"https://celery-master.oss-cn-shenzhen.aliyuncs.com/201805021643.apk");
+//                            intent.putExtra(CoreContants.DOWNLOAD_SAVE_FOlDER,"corelibrary");
+//                            intent.putExtra(CoreContants.DOWNLOAD_NOTITY,false);
+//                            startService(intent);
+
+                            AvatarDialog.show(mContext);
+
                         } else {
                             // Oups permission denied
                             L.e("动态请求权限失败");
@@ -128,6 +138,30 @@ public class MainActivity extends BaseActivity implements MainActivityContract.V
             L.e("文件路径：" + info.getFilePath());
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            switch (requestCode){
+                case PictureFromSysUtil.SELECT_PICTURES:
+                    Uri album = PictureFromSysUtil.albumOnActivityResult(mContext, data);
+                    PictureFromSysUtil.startPhotoZoom(mContext,album);
+                    break;
+                case PictureFromSysUtil.TAKE_PHOTO:
+                    Uri carmera = PictureFromSysUtil.carmeraOnActivityResult(mContext, data);
+                    PictureFromSysUtil.startPhotoZoom(mContext,carmera);
+                    break;
+                case PictureFromSysUtil.CROP_PICTURE:
+                    Bitmap bitmap  = BitmapFactory.decodeFile(PictureFromSysUtil.outPutUri.getPath());
+                    imageView.setImageBitmap(bitmap);
+                    break;
+            }
+        }
+    }
+
+
+
 
     @Override
     protected void onDestroy() {

@@ -191,6 +191,30 @@ public class ToolsUtils {
         return sb.toString();
     }
 
+    public static String getSystemFilePath(Context context) {
+        String cachePath;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable()) {
+            cachePath = context.getExternalCacheDir().getPath();//也可以这么写，只是返回的路径不一样，具体打log看
+        } else {
+            cachePath = context.getCacheDir().getPath();//也可以这么写，只是返回的路径不一样，具体打log看
+        }
+        return cachePath;
+    }
+
+
+    /**
+     * 判断是否有sd卡
+     * @return
+     */
+    public static boolean hasSdcard(){
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
+                || !Environment.isExternalStorageRemovable()) {
+            return true;
+        }
+        return false;
+    }
+
 
     /**
      * 获取版本号
