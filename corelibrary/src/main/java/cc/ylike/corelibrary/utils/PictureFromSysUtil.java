@@ -59,7 +59,7 @@ public class PictureFromSysUtil {
         if (ToolsUtils.hasSdcard()) {
             Intent intentFromCapture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//7.0及以上
-                Uri uriForFile = FileProvider.getUriForFile(context, ToolsUtils.getAppProcessName(context) + ".provider", mCameraFile);
+                Uri uriForFile = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", mCameraFile);
                 intentFromCapture.putExtra(MediaStore.EXTRA_OUTPUT, uriForFile);
                 intentFromCapture.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 intentFromCapture.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
@@ -81,7 +81,7 @@ public class PictureFromSysUtil {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//如果大于等于7.0使用FileProvider
-            Uri uriForFile = FileProvider.getUriForFile(context, ToolsUtils.getAppProcessName(context) + ".provider", mGalleryFile);
+            Uri uriForFile = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", mGalleryFile);
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uriForFile);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -100,7 +100,7 @@ public class PictureFromSysUtil {
         Uri dataUri = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             File imgUri = new File(ImageTool.getImageAbsolutePath(context, data.getData()));
-            dataUri = FileProvider.getUriForFile(context, ToolsUtils.getAppProcessName(context) + ".provider", imgUri);
+            dataUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", imgUri);
         } else {
             dataUri = data.getData();
         }
@@ -111,7 +111,7 @@ public class PictureFromSysUtil {
         Uri inputUri = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             //通过FileProvider创建一个content类型的Uri
-            inputUri = FileProvider.getUriForFile(context, ToolsUtils.getAppProcessName(context) + ".provider", mCameraFile);
+            inputUri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", mCameraFile);
         } else {
              inputUri = Uri.fromFile(mCameraFile);
         }

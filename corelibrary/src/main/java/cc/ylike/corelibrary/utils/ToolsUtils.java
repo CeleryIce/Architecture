@@ -277,7 +277,7 @@ public class ToolsUtils {
     }
 
     /**
-     * 获取当前应用程序的包名
+     * 获取当前应用程序的进程名
      * @param context 上下文对象
      * @return 返回包名
      */
@@ -564,60 +564,28 @@ public class ToolsUtils {
 
 
     /**
-     * 跳转安装App
+     * 自动跳转安装app
      * @param context 上下文对象
-     * @param appFile 文件
-     * @param requestCode  ActivityForResult requestCode
-     * 判断是否是8.0,8.0需要处理未知应用来源权限问题,否则直接安装
+     * @param file 本地文件
      */
-    public static void installApp(Activity context,File appFile,int requestCode){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            boolean b = context.getPackageManager().canRequestPackageInstalls();
-            if (b) {
-                //跳转安装app
-               ininstallApp(context,appFile);
-            } else {
-                //请求安装未知应用来源的权限
-                new RxPermissions(context).request(Manifest.permission.REQUEST_INSTALL_PACKAGES).subscribe(grant->{
-                    if (grant){
-                        //跳转安装app
-                        ininstallApp(context,appFile);
-                    }else {
-                        //没有权限跳转到
-                        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-                        context.startActivityForResult(intent, requestCode);
-                    }
-                });
-            }
-        } else {
-            //跳转安装app
-            ininstallApp(context,appFile);
-        }
-    }
-
-    /**
-     * 跳转安装App
-     * @param context
-     * @param appFile
-     */
-    private static void ininstallApp(Context context,File appFile){
-        //创建URI
-        Uri uri = Uri.fromFile(appFile);
-        //创建Intent意图
+    public static void installApp(Context context,File file){
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        //设置Uri和类型
-        intent.setDataAndType(uri, "application/vnd.android.package-archive");
-        //执行意图进行安装
+        Uri uri = FileProvider7.getUriForFile(context,file);
+        FileProvider7.grantPermissions(context,intent,uri,true);
+        FileProvider7.setIntentDataType(context,intent
+                ,"application/vnd.android.package-archive",file,true);
         context.startActivity(intent);
     }
+
+
 
     /**
      * 判断是否为空
      * @param str
      * @return
      */
-    private boolean isEmpty(@Nullable CharSequence str){
+    public boolean isEmpty(@Nullable CharSequence str){
         if (str != null && !TextUtils.isEmpty(str)){
             return false;
         }
