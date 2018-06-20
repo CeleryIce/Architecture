@@ -13,6 +13,8 @@ public class App extends Application {
 
     @Override
     public void onCreate() {
+
+
         super.onCreate();
 
         //弹出框配置
