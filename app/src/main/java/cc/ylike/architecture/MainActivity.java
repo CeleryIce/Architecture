@@ -26,12 +26,13 @@ import cc.ylike.architecture.mvp.presenter.MainActivityPresenter;
 import cc.ylike.corelibrary.bus.EventBase;
 import cc.ylike.corelibrary.bus.RxBus;
 import cc.ylike.corelibrary.bus.RxBusEvent;
-import cc.ylike.corelibrary.notify.DownloadService;
 import cc.ylike.corelibrary.notify.ProgressInfo;
+import cc.ylike.corelibrary.utils.ToolsUtils;
+import cc.ylike.corelibrary.utils.apkUtils.ApkUtils;
 import cc.ylike.corelibrary.utils.CoreContants;
 import cc.ylike.corelibrary.utils.L;
 import cc.ylike.corelibrary.utils.PictureFromSysUtil;
-import cc.ylike.corelibrary.utils.ToolsUtils;
+import cc.ylike.corelibrary.utils.apkUtils.DownloadServiceListener;
 import cc.ylike.corelibrary.widgets.alertdialog.AvatarDialog;
 
 
@@ -104,22 +105,23 @@ public class MainActivity extends BaseActivity implements MainActivityContract.V
 //                        .setLargeIcon(R.mipmap.ic_launcher)
 //                        .setIntent(intent)
 //                        .showSimpleNotity("小字");
-                ToolsUtils.installApp(mContext,new File("/storage/emulated/0/corelibrary/201805251137.apk"));
 
-//                new RxPermissions(MainActivity.this).request(Manifest.permission.READ_EXTERNAL_STORAGE
-//                        ,Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                        .subscribe(granted -> {
-//                            if (granted) {
+                new RxPermissions(MainActivity.this).request(Manifest.permission.READ_EXTERNAL_STORAGE
+                        ,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .subscribe(granted -> {
+                            if (granted) {
 //                                Intent intent = new Intent(mContext, DownloadService.class);
-//                                intent.putExtra(CoreContants.DOWNLOAD_URL,"https://celery-master.oss-cn-shenzhen.aliyuncs.com/201805251137.apk");
+//                                intent.putExtra(CoreContants.DOWNLOAD_URL,"https://celery-master.oss-cn-shenzhen.aliyuncs.com/app-release.apk");
 //                                intent.putExtra(CoreContants.DOWNLOAD_SAVE_FOlDER,"corelibrary");
 //                                intent.putExtra(CoreContants.DOWNLOAD_NOTITY,true);
 //                                startService(intent);
-//                            } else {
-//                                // Oups permission denied
-//                                L.e("动态请求权限失败");
-//                            }
-//                        });
+                                String downPath = "https://celery-master.oss-cn-shenzhen.aliyuncs.com/app-release.apk";
+                                ApkUtils.downLoad(mContext,downPath);
+                            } else {
+                                // Oups permission denied
+                                L.e("动态请求权限失败");
+                            }
+                        });
 
 //                activityPresenter.getData();
 //                startActivity(intent);
@@ -139,7 +141,11 @@ public class MainActivity extends BaseActivity implements MainActivityContract.V
             L.e("下载完成：" + info.getUrl());
             L.e("文件路径：" + info.getFilePath());
 
-            ToolsUtils.installApp(mContext,new File("/storage/emulated/0/corelibrary/201805251137.apk"));
+            String downPath = "https://celery-master.oss-cn-shenzhen.aliyuncs.com/app-release.apk";
+            if (info.getUrl().equals(downPath)){
+//                ToolsUtils.installApk(mContext,new File(info.getFilePath()));
+            }
+
         }
     }
 
@@ -163,8 +169,6 @@ public class MainActivity extends BaseActivity implements MainActivityContract.V
             }
         }
     }
-
-
 
 
     @Override

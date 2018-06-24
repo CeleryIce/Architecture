@@ -191,13 +191,22 @@ public class ToolsUtils {
         return sb.toString();
     }
 
-    public static String getSystemFilePath(Context context) {
+    /**
+     * 获取系统缓存路径
+     * @param context
+     * @param s
+     * @return
+     */
+    public static String getSystemFilePath(Context context,String s) {
         String cachePath;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {
-            cachePath = context.getExternalCacheDir().getPath();//也可以这么写，只是返回的路径不一样，具体打log看
+            cachePath = context.getExternalFilesDir(s).getAbsolutePath();
+//            cachePath = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+//            cachePath = context.getExternalCacheDir().getPath();//也可以这么写，只是返回的路径不一样，具体打log看
         } else {
-            cachePath = context.getCacheDir().getPath();//也可以这么写，只是返回的路径不一样，具体打log看
+            cachePath = context.getFilesDir().getAbsolutePath();
+//            cachePath = context.getCacheDir().getPath();//也可以这么写，只是返回的路径不一样，具体打log看
         }
         return cachePath;
     }
@@ -568,7 +577,7 @@ public class ToolsUtils {
      * @param context 上下文对象
      * @param file 本地文件
      */
-    public static void installApp(Context context,File file){
+    public static void installApk(Context context,File file){
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Uri uri = FileProvider7.getUriForFile(context,file);
@@ -581,11 +590,39 @@ public class ToolsUtils {
 
 
     /**
+     * 文件重命名
+     * @param filePath 文件绝对路径
+     * @param newFileName 新文件完整名字（包括后缀）
+     * @return 返回重命名后文件完整路径
+     */
+    public static String renameFile(String filePath, String newFileName) {
+        if(TextUtils.isEmpty(filePath)) {
+            return null;
+        }
+
+        if(TextUtils.isEmpty(newFileName)) {
+            return null;
+        }
+        File file = new File(filePath);
+        String[] strings = filePath.split("/");
+        //获取完整文件名
+        String fileName = strings[strings.length-1];
+        //获取到当前文件所属文件夹完整路径
+        String substring = filePath.substring(0,filePath.length()-fileName.length());
+        //重命名后文件完整路径
+        String newPath = substring + newFileName;
+        file.renameTo(new File(newPath));
+        return newPath;
+    }
+
+
+
+    /**
      * 判断是否为空
      * @param str
      * @return
      */
-    public boolean isEmpty(@Nullable CharSequence str){
+    public static boolean isEmpty(@Nullable CharSequence str){
         if (str != null && !TextUtils.isEmpty(str)){
             return false;
         }

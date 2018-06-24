@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * 共享文件适配
- * 支持Android 7.0、8.0+ 以上机型
+ * 支持Android 7.0、8.0+ 以上系统
  */
 public class FileProvider7 {
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 
@@ -47,9 +48,9 @@ public class PictureFromSysUtil {
     public static final int TAKE_PHOTO = 0x0112;
     public static final int CROP_PICTURE = 0x0113;
 
-    private static File mCameraFile = new File(ToolsUtils.getSystemFilePath(CoreLibrary.AtContext), "camera.jpg");//照相机的File对象
+    private static File mCameraFile = new File(ToolsUtils.getSystemFilePath(CoreLibrary.AtContext,Environment.DIRECTORY_PICTURES), "camera.jpg");//照相机的File对象
     //裁剪后的File对象
-    private static File mCropFile = new File(ToolsUtils.getSystemFilePath(CoreLibrary.AtContext), "camera_crop.jpg");
+    private static File mCropFile = new File(ToolsUtils.getSystemFilePath(CoreLibrary.AtContext,Environment.DIRECTORY_PICTURES), "camera_crop.jpg");
     public static Uri outPutUri = Uri.fromFile(mCropFile);
 
     /**
@@ -77,7 +78,7 @@ public class PictureFromSysUtil {
      * 打开相册
      */
     public static void OpenAlbum(Activity context) {
-        File mGalleryFile = new File(ToolsUtils.getSystemFilePath(context), "gallery.jpg");//照相机的File对象
+        File mGalleryFile = new File(ToolsUtils.getSystemFilePath(context,Environment.DIRECTORY_PICTURES), "gallery.jpg");//照相机的File对象
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {//如果大于等于7.0使用FileProvider

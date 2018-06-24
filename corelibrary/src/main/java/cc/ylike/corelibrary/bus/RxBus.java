@@ -7,6 +7,9 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import cc.ylike.corelibrary.utils.L;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
@@ -74,7 +77,10 @@ public class RxBus {
         if(obj == null) {
             return;
         }
-        Disposable disposable =  rxBus.ofType(EventBase.class).subscribeOn(Schedulers.newThread())
+        Disposable disposable =  rxBus.ofType(EventBase.class)
+                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<EventBase>() {
                     @Override
                     public void accept(EventBase eventBase) throws Exception {
@@ -83,12 +89,12 @@ public class RxBus {
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-
+                        throwable.printStackTrace();
                     }
                 }, new Action() {
                     @Override
                     public void run() throws Exception {
-
+                        L.e("Rxbus 未知错误");
                     }
                 });
 

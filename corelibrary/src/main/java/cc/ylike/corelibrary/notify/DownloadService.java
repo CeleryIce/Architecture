@@ -10,6 +10,8 @@ import android.graphics.Color;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
+
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +24,7 @@ import cc.ylike.corelibrary.http.OkhttpClientUtils;
 import cc.ylike.corelibrary.utils.CoreContants;
 import cc.ylike.corelibrary.utils.L;
 import cc.ylike.corelibrary.utils.ToolsUtils;
+import cc.ylike.corelibrary.utils.apkUtils.DownloadServiceListener;
 
 /**
  * 下载服务Service
@@ -54,12 +57,17 @@ public class DownloadService extends Service {
         }
         String url = intent.getStringExtra(CoreContants.DOWNLOAD_URL);
         String saveFolder = intent.getStringExtra(CoreContants.DOWNLOAD_SAVE_FOlDER);
+        String saveFileName = intent.getStringExtra(CoreContants.DOWNLOAD_SAVE_FILE_NAME);
         boolean notity = intent.getBooleanExtra(CoreContants.DOWNLOAD_NOTITY,false);
+        if (url == null || saveFolder == null){
+            L.e("url："+ url + "\tsaveFolder：" + saveFolder);
+            return super.onStartCommand(intent, flags, startId);
+        }
         if (stringMap.size()< DOWNLOAD_TASK_MOST_COUNT) {
             if ((url.startsWith("http://") || url.startsWith("https://"))) {
                 if (stringMap.get(url) == null) {
                     stringMap.put(url, saveFolder);
-                    downLoad(url, notity);
+                    downLoad(url,saveFileName,notity);
                 } else {
                     L.e("该文件正在下载，请勿重复添加");
                 }
@@ -75,9 +83,10 @@ public class DownloadService extends Service {
     /**
      * 下载任务
      * @param url 下载地址
+     * @param saveFileName 保存文件的完整名称（例如：flie_1a.apk）
      * @param notity 是否通知栏显示进度
      */
-    private void downLoad(String url, boolean notity){
+    private void downLoad(String url, String saveFileName, boolean notity){
         new OkhttpClientUtils().downLoad(this, url, new DownLoadProgressListener() {
             @Override
             public void progress(float percent, boolean done,String tag) {
@@ -89,7 +98,7 @@ public class DownloadService extends Service {
                     }
                     progressMap.remove(tag);
                 } else {
-                    if (progressMap.get(tag) == null || progress > progressMap.get(tag)) {
+                    if ((progressMap.get(tag) == null || progress > progressMap.get(tag)) && progress < 100) {
                         if (notity) {
                             sendNotification(tag, progress);
                             progressMap.put(tag, progress);
@@ -104,17 +113,22 @@ public class DownloadService extends Service {
                         progressInfo.setPercent(percent);
                         progressInfo.setUrl(tag);
                         RxBus.getInstance().post(new EventBase(CoreContants.DOWNLOAD_PROGRESS_NOTITY, tag, progressInfo));
-
                     }
                 }
+
             }
 
             @Override
             public void write(InputStream inputStream,String tag) {
                 String saveFolder = stringMap.get(tag);
-                //保存数据流到SD卡
-                String[] string = tag.split("/");
-                String savePath = ToolsUtils.savaFile(inputStream,saveFolder, string[string.length-1]);
+                String savePath = null;
+                if (ToolsUtils.isEmpty(saveFileName)) {
+                    //保存数据流到SD卡
+                    String[] string = tag.split("/");
+                     savePath = ToolsUtils.savaFile(inputStream, saveFolder, string[string.length - 1]);
+                }else {
+                    savePath = ToolsUtils.savaFile(inputStream, saveFolder, saveFileName);
+                }
                 //发送广播更新保存进度
                 ProgressInfo progressInfo = new ProgressInfo();
                 progressInfo.setPercent(100);
@@ -126,17 +140,22 @@ public class DownloadService extends Service {
 
             @Override
             public void onFailure(int code, String Msg, Exception e,String tag) {
+                L.e(Msg);
                 try {
                     stringMap.remove(tag);
                     progressMap.remove(tag);
                 }catch (Exception e1){
                     e1.printStackTrace();
                 }
-                L.e(Msg);
             }
         });
     }
 
+    /**
+     * 下载进度跳更新显示
+     * @param tag
+     * @param progress
+     */
     private void sendNotification(String tag, int progress){
         NotificationCompat.Builder builder = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
