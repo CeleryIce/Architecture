@@ -30,23 +30,29 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:support-v4:27.1.1'
-    compile 'com.android.support:appcompat-v7:27.1.1'
-    compile 'com.android.support:recyclerview-v7:27.1.1'
-    compile 'com.android.support:design:27.1.1'
-    testCompile 'junit:junit:4.12'
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api 'com.android.support.constraint:constraint-layout:1.0.2'
+    api 'com.android.support:support-v4:27.1.1'
+    api 'com.android.support:appcompat-v7:27.1.1'
+    api 'com.android.support:recyclerview-v7:27.1.1'
+    api 'com.android.support:design:27.1.1'
+    testImplementation 'junit:junit:4.12'
 
-    compile project(':corelibrary')
+    api project(':corelibrary')
     //butterknife
-    compile 'com.jakewharton:butterknife:8.5.1'
+    api 'com.jakewharton:butterknife:8.5.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     //dragger2
-    compile 'com.google.dagger:dagger:2.5'
+    api 'com.google.dagger:dagger:2.5'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.5'
-    provided 'org.glassfish:javax.annotation:10.0-b28'
+    compileOnly 'org.glassfish:javax.annotation:10.0-b28'
     //ARouter（不能引入apt否则会无效）
     api 'com.alibaba:arouter-api:1.3.1'
+
+    //卡顿检测
+    api 'com.github.markzhai:blockcanary-android:1.5.0'
+    //内存泄漏检测
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
 
 }

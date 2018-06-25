@@ -38,6 +38,8 @@ import java.util.regex.Pattern;
 
 import io.reactivex.annotations.Nullable;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * Created by Celery on 2016/8/30.
  * https://github.com/Celery1025
@@ -495,8 +497,14 @@ public class ToolsUtils {
             Log.e("", "SD卡不存在");
             return null;
         }
-        //可以在这里自定义路径
-        File file = new File(Environment.getExternalStorageDirectory() + File.separator + folderName);
+        File file = null;
+        //表示是内部存储文件夹路径
+        if (folderName.startsWith(Environment.getExternalStorageDirectory().getAbsolutePath())){
+            file = new File(folderName);
+        }else {
+            //可以在这里自定义路径
+            file = new File(Environment.getExternalStorageDirectory() + File.separator + folderName);
+        }
         if (!file.exists()){
             file.mkdirs();
         }

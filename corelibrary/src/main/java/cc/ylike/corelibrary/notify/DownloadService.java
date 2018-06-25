@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -35,6 +36,7 @@ public class DownloadService extends Service {
     private int DOWNLOAD_TASK_MOST_COUNT = 5;
     private static Map<String,String> stringMap = new HashMap<>();
     private static Map<String,Integer> progressMap = new HashMap<>();
+    private static Context context;
 
 
     @Override
@@ -46,6 +48,7 @@ public class DownloadService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        context = this;
         manger = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         stringMap.clear();
     }
@@ -128,6 +131,7 @@ public class DownloadService extends Service {
                      savePath = ToolsUtils.savaFile(inputStream, saveFolder, string[string.length - 1]);
                 }else {
                     savePath = ToolsUtils.savaFile(inputStream, saveFolder, saveFileName);
+//                    savePath =  ToolsUtils.saveFileToData(context,saveFileName,inputStream);
                 }
                 //发送广播更新保存进度
                 ProgressInfo progressInfo = new ProgressInfo();

@@ -27,9 +27,7 @@ public class ApkUtils {
      * @param url
      */
     public static void downLoad(Context context,String url){
-        PackageManager packageManager = context.getPackageManager();
         String archiveFilePath = ToolsUtils.getSystemFilePath(context,Environment.DIRECTORY_DOWNLOADS) + File.separator + ToolsUtils.getAppName(context) + ".apk";
-        PackageInfo packageInfo = packageManager.getPackageArchiveInfo(archiveFilePath , PackageManager.GET_ACTIVITIES);
         if (hasLocalLasterApk(context)){
             //跳转安装app
             ToolsUtils.installApk(context,new File(archiveFilePath));
