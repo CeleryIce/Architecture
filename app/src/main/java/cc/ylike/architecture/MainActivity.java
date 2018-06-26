@@ -12,8 +12,6 @@ import android.widget.ImageView;
 
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
-import java.io.File;
-
 import javax.inject.Inject;
 
 import butterknife.BindView;
@@ -28,13 +26,9 @@ import cc.ylike.corelibrary.bus.RxBus;
 import cc.ylike.corelibrary.bus.RxBusEvent;
 import cc.ylike.corelibrary.notify.DownloadService;
 import cc.ylike.corelibrary.notify.ProgressInfo;
-import cc.ylike.corelibrary.utils.ToolsUtils;
-import cc.ylike.corelibrary.utils.apkUtils.ApkUtils;
 import cc.ylike.corelibrary.utils.CoreContants;
 import cc.ylike.corelibrary.utils.L;
 import cc.ylike.corelibrary.utils.PictureFromSysUtil;
-import cc.ylike.corelibrary.utils.apkUtils.DownloadServiceListener;
-import cc.ylike.corelibrary.widgets.alertdialog.AvatarDialog;
 
 
 public class MainActivity extends BaseActivity implements MainActivityContract.View{

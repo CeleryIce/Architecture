@@ -1,4 +1,4 @@
-package cc.ylike.corelibrary.utils.apkUtils;
+package cc.ylike.corelibrary.utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,7 +11,7 @@ import cc.ylike.corelibrary.utils.CoreContants;
 import cc.ylike.corelibrary.utils.ToolsUtils;
 
 /**
- * app 自动更新安装工具类
+ * apk 自动更新安装工具类
  */
 public class ApkUtils {
 
