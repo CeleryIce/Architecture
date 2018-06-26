@@ -1,5 +1,6 @@
 package cc.ylike.corelibrary.http;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 
@@ -49,8 +50,7 @@ public abstract class CeleryRequestBody extends RequestBody {
 
     private Sink sink(Sink sink) {
         return new ForwardingSink(sink) {
-            private long current;
-            private long total;
+             long current,total,lastTime;
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
                 super.write(source, byteCount);
@@ -59,15 +59,66 @@ public abstract class CeleryRequestBody extends RequestBody {
                 }
                 current += byteCount;
 
-                Message message = handler.obtainMessage();
-                message.what = 200;
-                message.obj = current;
-                if (total == current){
-                    message.arg1 = 1;
-                }else {
-                    message.arg1 = 0;
+
+                /**
+                 *  根据系统版本不同设置不同的进度读取精度，防止卡顿内存溢出
+                 */
+                long currentTimeMillis = System.currentTimeMillis();
+                /**
+                 * 5.0以下系统每秒读取1次
+                 */
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP){
+                    if (currentTimeMillis-lastTime>=1000) {
+                        lastTime = currentTimeMillis;
+                        Message message = handler.obtainMessage();
+                        message.what = 200;
+                        message.obj = current;
+                        if (total == current){
+                            message.arg1 = 1;
+                        }else {
+                            message.arg1 = 0;
+                        }
+                        message.sendToTarget();
+                    }
                 }
-                message.sendToTarget();
+
+                /**
+                 * 5.0-7.0每秒读取2次
+                 */
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT<= Build.VERSION_CODES.N){
+                    if (currentTimeMillis-lastTime >= 500) {
+                        lastTime = currentTimeMillis;
+                        Message message = handler.obtainMessage();
+                        message.what = 200;
+                        message.obj = current;
+                        if (total == current){
+                            message.arg1 = 1;
+                        }else {
+                            message.arg1 = 0;
+                        }
+                        message.sendToTarget();
+                    }
+                }
+
+                /**
+                 * 7.0+ 以上系统每秒读取4次
+                 */
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N ){
+                    if (currentTimeMillis-lastTime >= 250) {
+                        lastTime = currentTimeMillis;
+                        Message message = handler.obtainMessage();
+                        message.what = 200;
+                        message.obj = current;
+                        if (total == current){
+                            message.arg1 = 1;
+                        }else {
+                            message.arg1 = 0;
+                        }
+                        message.sendToTarget();
+                    }
+                }
+
+
 
             }
         };

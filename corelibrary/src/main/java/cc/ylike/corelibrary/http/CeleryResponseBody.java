@@ -1,5 +1,6 @@
 package cc.ylike.corelibrary.http;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -78,16 +79,57 @@ public abstract class CeleryResponseBody extends ResponseBody {
         return new ForwardingSource(source) {
             //当前读取字节数
             long totalBytesRead = 0L;
+            long lastTime = 0;
             @Override public long read(Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
                 //增加当前读取的字节数，如果读取完成了bytesRead会返回-1
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
 
-                Message message = handler.obtainMessage();
-                message.what = 200;
-                message.arg1 = (int) bytesRead;
-                message.obj = totalBytesRead;
-                message.sendToTarget();
+                /**
+                 *  根据系统版本不同设置不同的进度读取精度，防止卡顿内存溢出
+                 */
+                long currentTimeMillis = System.currentTimeMillis();
+                /**
+                 * 5.0以下系统每秒读取1次
+                 */
+                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP){
+                    if (currentTimeMillis-lastTime>=1000) {
+                        lastTime = currentTimeMillis;
+                        Message message = handler.obtainMessage();
+                        message.what = 200;
+                        message.arg1 = (int) bytesRead;
+                        message.obj = totalBytesRead;
+                        message.sendToTarget();
+                    }
+                }
+
+                /**
+                 * 5.0-7.0每秒读取2次
+                 */
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP && Build.VERSION.SDK_INT<= Build.VERSION_CODES.N){
+                    if (currentTimeMillis-lastTime >= 500) {
+                        lastTime = currentTimeMillis;
+                        Message message = handler.obtainMessage();
+                        message.what = 200;
+                        message.arg1 = (int) bytesRead;
+                        message.obj = totalBytesRead;
+                        message.sendToTarget();
+                    }
+                }
+
+                /**
+                 * 7.0+ 以上系统每秒读取4次
+                 */
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N ){
+                    if (currentTimeMillis-lastTime >= 250) {
+                        lastTime = currentTimeMillis;
+                        Message message = handler.obtainMessage();
+                        message.what = 200;
+                        message.arg1 = (int) bytesRead;
+                        message.obj = totalBytesRead;
+                        message.sendToTarget();
+                    }
+                }
 
 //                //回调，如果contentLength()不知道长度，会返回-1
 //               onResponseProgress(totalBytesRead, responseBody.contentLength(), bytesRead == -1);

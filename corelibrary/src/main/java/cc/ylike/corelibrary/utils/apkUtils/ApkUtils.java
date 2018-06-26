@@ -1,16 +1,11 @@
 package cc.ylike.corelibrary.utils.apkUtils;
 
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Environment;
-
 import java.io.File;
-import java.io.Serializable;
-
 import cc.ylike.corelibrary.notify.DownloadService;
 import cc.ylike.corelibrary.utils.CoreContants;
 import cc.ylike.corelibrary.utils.ToolsUtils;
@@ -19,7 +14,6 @@ import cc.ylike.corelibrary.utils.ToolsUtils;
  * app 自动更新安装工具类
  */
 public class ApkUtils {
-
 
     /**
      * apk下载

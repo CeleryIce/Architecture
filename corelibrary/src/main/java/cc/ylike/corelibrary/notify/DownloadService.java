@@ -8,10 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-import android.text.TextUtils;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -25,7 +23,6 @@ import cc.ylike.corelibrary.http.OkhttpClientUtils;
 import cc.ylike.corelibrary.utils.CoreContants;
 import cc.ylike.corelibrary.utils.L;
 import cc.ylike.corelibrary.utils.ToolsUtils;
-import cc.ylike.corelibrary.utils.apkUtils.DownloadServiceListener;
 
 /**
  * 下载服务Service
@@ -33,6 +30,7 @@ import cc.ylike.corelibrary.utils.apkUtils.DownloadServiceListener;
 public class DownloadService extends Service {
 
     private NotificationManager manger;
+    //默认最多同时下载5个任务
     private int DOWNLOAD_TASK_MOST_COUNT = 5;
     private static Map<String,String> stringMap = new HashMap<>();
     private static Map<String,Integer> progressMap = new HashMap<>();
@@ -131,7 +129,6 @@ public class DownloadService extends Service {
                      savePath = ToolsUtils.savaFile(inputStream, saveFolder, string[string.length - 1]);
                 }else {
                     savePath = ToolsUtils.savaFile(inputStream, saveFolder, saveFileName);
-//                    savePath =  ToolsUtils.saveFileToData(context,saveFileName,inputStream);
                 }
                 //发送广播更新保存进度
                 ProgressInfo progressInfo = new ProgressInfo();
@@ -177,8 +174,8 @@ public class DownloadService extends Service {
         }else {
             builder = new NotificationCompat.Builder(this,"channel_3");
         }
-        builder.setSmallIcon(R.drawable.notify_download);
-        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.notify_download));
+        builder.setSmallIcon(R.drawable.notify_download_small);
+        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.notify_download_large));
         builder.build().sound = null;//取消铃声
         builder.build().vibrate = null;//取消震动
         //禁止用户点击删除按钮删除
