@@ -23,6 +23,7 @@ import cc.ylike.corelibrary.bus.RxBus;
 import cc.ylike.corelibrary.bus.RxBusEvent;
 import cc.ylike.corelibrary.notify.DownloadService;
 import cc.ylike.corelibrary.notify.ProgressInfo;
+import cc.ylike.corelibrary.utils.CeleryToast;
 import cc.ylike.corelibrary.utils.CoreContants;
 import cc.ylike.corelibrary.utils.L;
 import cc.ylike.corelibrary.utils.PictureFromSysUtil;
@@ -49,12 +50,30 @@ public class MainActivity extends BaseActivity implements MainActivityContract.V
         DaggerActivityComponent.builder().activityModule(new ActivityModule(this,this)).build().inject(this);
         setSwipeBackEnable(false);
         RxBus.getInstance().register(this);
+
+        new RxPermissions(MainActivity.this).request(Manifest.permission.READ_EXTERNAL_STORAGE
+                        ,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .subscribe(granted -> {
+                        if (granted) {
+
+                        } else {
+                            // Oups permission denied
+                            L.e("动态请求权限失败");
+                        }
+                    });
+
     }
 
     @OnClick({R.id.button, R.id.button2})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.button:
+                startActivity(new Intent(mContext,CityJsonFileMakeActivity.class));
+
+                CeleryToast.showShort(mContext,"自定义Toast");
+
+//                startActivity(new Intent(mContext,ZoomViewActivity.class));
+
 
 //                Intent intent1 = new Intent(MainActivity.this,SecondActivity.class);
 //                NotifyComponent.with(mContext,true)
@@ -69,25 +88,28 @@ public class MainActivity extends BaseActivity implements MainActivityContract.V
 //                ImageLoader.with(this)
 //                        .load("https://www.baidu.com/img/baidu_jgylogo3.gif")
 //                        .into(imageView);
-                new RxPermissions(MainActivity.this).request(Manifest.permission.READ_EXTERNAL_STORAGE
-                        ,Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    .subscribe(granted -> {
-                        if (granted) {
-                            Intent intent = new Intent(mContext, DownloadService.class);
-                            intent.putExtra(CoreContants.DOWNLOAD_URL,"https://celery-master.oss-cn-shenzhen.aliyuncs.com/app-release.apk");
-                            intent.putExtra(CoreContants.DOWNLOAD_SAVE_FOlDER,"corelibrary");
-                            intent.putExtra(CoreContants.DOWNLOAD_NOTITY,true);
-                            startService(intent);
-
-//                            AvatarDialog.show(mContext);
-
-                        } else {
-                            // Oups permission denied
-                            L.e("动态请求权限失败");
-                        }
-                    });
+//                new RxPermissions(MainActivity.this).request(Manifest.permission.READ_EXTERNAL_STORAGE
+//                        ,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                    .subscribe(granted -> {
+//                        if (granted) {
+//                            Intent intent = new Intent(mContext, DownloadService.class);
+//                            intent.putExtra(CoreContants.DOWNLOAD_URL,"https://celery-master.oss-cn-shenzhen.aliyuncs.com/app-release.apk");
+//                            intent.putExtra(CoreContants.DOWNLOAD_SAVE_FOlDER,"corelibrary");
+//                            intent.putExtra(CoreContants.DOWNLOAD_NOTITY,true);
+//                            startService(intent);
+//
+////                            AvatarDialog.show(mContext);
+//
+//                        } else {
+//                            // Oups permission denied
+//                            L.e("动态请求权限失败");
+//                        }
+//                    });
                 break;
             case R.id.button2:
+
+                CeleryToast.showLong(mContext,"非自定义Toast");
+
 //                Intent intent = new Intent(MainActivity.this,SecondActivity.class);
 //                NotifyComponent.with(mContext,false)
 //                        .setTicker("悬浮消息")
@@ -98,23 +120,23 @@ public class MainActivity extends BaseActivity implements MainActivityContract.V
 //                        .setIntent(intent)
 //                        .showSimpleNotity("小字");
 
-                new RxPermissions(MainActivity.this).request(Manifest.permission.READ_EXTERNAL_STORAGE
-                        ,Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .subscribe(granted -> {
-                            if (granted) {
-                                Intent intent = new Intent(mContext, DownloadService.class);
-                                intent.putExtra(CoreContants.DOWNLOAD_URL,"https://celery-master.oss-cn-shenzhen.aliyuncs.com/201805021643.apk");
-                                intent.putExtra(CoreContants.DOWNLOAD_SAVE_FOlDER,"corelibrary");
-                                intent.putExtra(CoreContants.DOWNLOAD_NOTITY,true);
-                                startService(intent);
-
-//                                String downPath = "https://celery-master.oss-cn-shenzhen.aliyuncs.com/app-release.apk";
-//                                ApkUtils.downLoad(mContext,downPath);
-                            } else {
-                                // Oups permission denied
-                                L.e("动态请求权限失败");
-                            }
-                        });
+//                new RxPermissions(MainActivity.this).request(Manifest.permission.READ_EXTERNAL_STORAGE
+//                        ,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                        .subscribe(granted -> {
+//                            if (granted) {
+//                                Intent intent = new Intent(mContext, DownloadService.class);
+//                                intent.putExtra(CoreContants.DOWNLOAD_URL,"https://celery-master.oss-cn-shenzhen.aliyuncs.com/201805021643.apk");
+//                                intent.putExtra(CoreContants.DOWNLOAD_SAVE_FOlDER,"corelibrary");
+//                                intent.putExtra(CoreContants.DOWNLOAD_NOTITY,true);
+//                                startService(intent);
+//
+////                                String downPath = "https://celery-master.oss-cn-shenzhen.aliyuncs.com/app-release.apk";
+////                                ApkUtils.downLoad(mContext,downPath);
+//                            } else {
+//                                // Oups permission denied
+//                                L.e("动态请求权限失败");
+//                            }
+//                        });
 
 //                activityPresenter.getData();
 //                startActivity(intent);

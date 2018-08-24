@@ -75,4 +75,9 @@ dependencies {
     api('com.orhanobut:logger:2.2.0') {
         exclude group: 'com.orhanobut'
     }
+
+    androidTestImplementation 'junit:junit:4.12'
+    androidTestImplementation ('com.android.support.test:runner:0.5')
+    androidTestImplementation 'com.android.support.test:rules:0.5'
+    androidTestImplementation ('com.android.support.test.espresso:espresso-core:2.2.2')
 }

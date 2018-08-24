@@ -1,18 +1,25 @@
 package cc.ylike.corelibrary.utils;
 
 import android.content.Context;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import cc.ylike.corelibrary.R;
 
 /**
  * @author xsl
  * @version 1.0
  * @date 2017/4/11
  * @description
- * toast控制器
+ * 自定义toast控制器
  */
 public class CeleryToast {
 
     private static Toast toast;
+    private static TextView messge;
 
     /**
      * short Toast
@@ -21,9 +28,16 @@ public class CeleryToast {
      */
     public static void showShort(Context context,String content) {
         if (toast == null) {
-            toast = Toast.makeText(context, content, Toast.LENGTH_SHORT);
+            toast = new Toast(context);
+            toast.setGravity(Gravity.BOTTOM, 0, DisplayUtils.dip2px(context,100));
+            toast.setDuration(Toast.LENGTH_SHORT);
+            View toastView = LayoutInflater.from(context).inflate(R.layout.celery_toast_view_layout,null);
+            messge = (TextView)  toastView.findViewById(R.id.messge);
+            messge.setText(content);
+            toast.setView(toastView);
         } else {
-            toast.setText(content);
+            toast.setDuration(Toast.LENGTH_SHORT);
+            messge.setText(content);
         }
         toast.show();
     }
@@ -35,9 +49,16 @@ public class CeleryToast {
      */
     public static void showLong(Context context,String content) {
         if (toast == null) {
-            toast = Toast.makeText(context, content, Toast.LENGTH_LONG);
+            toast = new Toast(context);
+            toast.setGravity(Gravity.BOTTOM, 0, DisplayUtils.dip2px(context,100));
+            toast.setDuration(Toast.LENGTH_LONG);
+            View toastView = LayoutInflater.from(context).inflate(R.layout.celery_toast_view_layout,null);
+            messge = (TextView)  toastView.findViewById(R.id.messge);
+            messge.setText(content);
+            toast.setView(toastView);
         } else {
-            toast.setText(content);
+            toast.setDuration(Toast.LENGTH_LONG);
+            messge.setText(content);
         }
         toast.show();
     }
